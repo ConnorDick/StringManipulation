@@ -1,0 +1,93 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+class String {
+private:
+    int length;
+    char* str;
+public:
+    String() {
+        length = 0;
+        str = nullptr;
+    }
+    String(int len, char* string) {
+        length = 0;
+        str = nullptr;
+    }
+    String(const char* string) {
+        length = strlen(string);
+        str = new char[length+100];
+        //for (int i = 0; i < length; i++) {
+        //    str[i] = string[i];
+        //}
+        strcpy(str, string);
+    }
+    String(const String& str1) {
+        length = str1.length;
+        str = new char[length+100];
+        //for (int i = 0; i < length; i++) {
+        //    str[i] = str1.str[i];
+        //}
+        strcpy(str, str1.str);
+    }
+    String(String&& obj) noexcept{
+        length = obj.length;
+        str = new char[length+100];
+        strcpy(str, obj.str);
+        obj.length = 0;
+        obj.str = nullptr;
+    }
+    ~String() {
+        delete str;
+    }
+    friend ostream& operator<< (ostream& os, const String& obj) {
+        for (int i = 0; i < obj.length; i++) {
+            os << obj.str[i];
+        }
+        return os;
+    };
+    String operator+ (String& str1) {
+        String s;
+        s.length = strlen(this->str) + str1.length;
+        s.str = new char[s.length+100];
+        char* temp = strcat(this->str, str1.str);
+        strcpy(s.str, temp);
+        return s;
+    }
+};
+
+
+int main() {
+    cout << "########" << endl;
+    cout << "Main Problem" << endl;
+    cout << "########" << endl;
+
+    // Create String s = abc
+    String s = "abc";
+    // cout s
+    cout << "s is: " << s << '\n';
+    // Create String s = def
+    String s2 = "def";
+    // cout s2
+    cout  << "s2 is: " << s2 << '\n';
+    // create String s3 equal s2
+    String s3 = s2; // copy constructor
+    //// cout s3
+    cout << "s3 is: " << s3 << " copy constructor "<<'\n';
+    ////	Create String s4 that is assigned to s added to s2
+    String s4 = s + s2;  // abcdef // copy constructor
+    //// cout s4
+    cout << "s4 is: " << s4 << " copy constructor of s + s2"<< '\n';
+    //// Create s5 and move s4
+    String s5 = move(s4); // move constructor
+    //// cout s5
+    cout << "s5 is: " << s5 << '\n';
+    //cout << "cout s4 should give you error after move()" << endl;
+    cout << s4 << '\n';
+    cout << "====[ end ]====" << endl;
+    //cout << "               " << endl;
+
+    return 0;
+}
